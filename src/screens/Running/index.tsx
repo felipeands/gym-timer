@@ -1,12 +1,23 @@
 import styled from "styled-components"
 import Timer from "../../components/Timer"
+import { useTrainingContext } from "../../contexts/TrainingContext"
 
 const Running = () => {
+  const { training, getLastExercise, getTotalExercises } = useTrainingContext()
+
+  if (!training) {
+    return <></>
+  }
+
+  const exercise = getLastExercise(training)
+  const totalExercises = getTotalExercises(training)
+  // const cycle = getLastCycle(exercise)
+
   return (
     <Wrapper>
-      <h1>Biceps</h1>
+      <h1>{exercise?.bodyPart}</h1>
       <p>
-        Exercício <b>5</b> Supino inclinado
+        Exercício <b>{totalExercises}</b> {exercise?.name}
         <Timer time="02:50" />
       </p>
       <p>

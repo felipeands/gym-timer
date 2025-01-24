@@ -1,26 +1,55 @@
+import { useState } from "react"
 import styled from "styled-components"
+import { BodyPart } from "../../types/exercise"
+import { Training } from "../../types/training"
+import { useTrainingContext } from "../../contexts/TrainingContext"
+
+const bodyParts: BodyPart[] = ['ombro' , 'peito' , 'costas' , 'biceps' , 'triceps' , 'trapezio' , 'antebraço' , 'panturrilha' , 'coxa' , 'gluteos']
 
 const NewExercise = () => {
+
+  const [bodyPart, setBodyPart] = useState<BodyPart | null>(null)
+  const [name, setName] = useState<string>('')
+  const isFormValid = Boolean(bodyPart && name !== '')
+
+  const { newTraining } = useTrainingContext()
+
+  const handleNewTraining = () => {
+    if (!bodyPart) {
+      return
+    }
+
+    const training: Training = {
+      execises: [{
+        bodyPart,
+        name,
+        cycles: [{
+          startAt: new Date()
+        }]
+      }]
+    }
+    console.log(training)
+    newTraining(training)
+  }
+
   return (
     <Wrapper>
       <h1>
         Novo treino
       </h1>
       <FieldWrapper>
-        <select>
+        <select onChange={(e) => setBodyPart(e.target.value as BodyPart)}>
           <option>Parte do corpo</option>
-          <option>Ombro</option>
-          <option>Peito</option>
-          <option>Costas</option>
-          <option>Biceps</option>
-          <option>Triceps</option>
+          {bodyParts.map((name, index) => (
+            <option key={index} value={name}>{name}</option>
+          ))}
         </select>
       </FieldWrapper>
       <FieldWrapper>
-        <input type="text" placeholder="Exercício" />
+        <input type="text" placeholder="Exercício" onChange={(e) => setName(e.target.value)} />
       </FieldWrapper>
       <FieldWrapper>
-        <Start>Começar o treino</Start>
+        <Start disabled={!isFormValid} onClick={handleNewTraining}>Começar o treino</Start>
       </FieldWrapper>
     </Wrapper>)
 }
