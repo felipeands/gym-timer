@@ -4,16 +4,15 @@ import Timer from "../../components/Timer"
 const EndTraining = () => {
   return (
     <Wrapper>
-      <h1>Biceps</h1>
       <p>
-        <div>Total Ciclos <b>21</b></div>
+        <div>Total Repetições <b>21</b></div>
       </p>
 
       <p>
-        Total Aparelhos <b>7</b>
+        Total Exercícios <b>7</b>
       </p>
 
-        <SaveTraining>Salvar treino</SaveTraining>
+        <SaveTraining>Novo treino</SaveTraining>
 
       <p>
         Treino total

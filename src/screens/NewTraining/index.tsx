@@ -1,27 +1,26 @@
 import styled from "styled-components"
-import EndTrainingButton from "../../components/EndTrainingButton"
 
 const NewExercise = () => {
   return (
     <Wrapper>
       <h1>
-        Próximo aparelho
+        Novo treino
       </h1>
-      <p>Anterior: Ombro</p>
       <FieldWrapper>
-      <select>
-        <option>Ombro</option>
-        <option>Peito</option>
-        <option>Costas</option>
-        <option>Biceps</option>
-        <option>Triceps</option>
-      </select>
+        <select>
+          <option>Parte do corpo</option>
+          <option>Ombro</option>
+          <option>Peito</option>
+          <option>Costas</option>
+          <option>Biceps</option>
+          <option>Triceps</option>
+        </select>
       </FieldWrapper>
       <FieldWrapper>
-        <Start>Começar treino</Start>
+        <input type="text" placeholder="Exercício" />
       </FieldWrapper>
       <FieldWrapper>
-        <EndTrainingButton />
+        <Start>Começar o treino</Start>
       </FieldWrapper>
     </Wrapper>)
 }

@@ -6,33 +6,25 @@ const Running = () => {
     <Wrapper>
       <h1>Biceps</h1>
       <p>
-        <div>Ciclo <b>3</b></div>
-        <Timer time="00:22" />
-        <EndCycle>Finalizar Ciclo</EndCycle>
-      </p>
-
-      <p>
-        Aparelho <b>5</b>
+        Exercício <b>5</b> Supino inclinado
         <Timer time="02:50" />
-        <EndExercise>Finalizar aparelho</EndExercise>
+      </p>
+      <p>
+        <div>Repetição <b>3</b></div>
+        <Timer time="00:22" />
       </p>
 
       <p>
         Treino
         <Timer time="28:05" />
-        <EndTraining>Finalizar treino</EndTraining>
       </p>
+      <EndCycle>Finalizar Repetição</EndCycle>
     </Wrapper>
   )
 }
-
 
 export default Running
 
 const Wrapper = styled.div``
 
 const EndCycle = styled.button``
-
-const EndExercise = styled.button``
-
-const EndTraining = styled.button``

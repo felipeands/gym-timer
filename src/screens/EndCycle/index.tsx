@@ -6,20 +6,36 @@ const EndCycle = () => {
     <Wrapper>
       <h1>Biceps</h1>
       <p>
+        Exercício <b>5</b> Supino inclinado
+        <Timer time="02:50" />
+      </p>
+      <p>
         <div>Descanso</div>
         <Timer time="00:11" />
       </p>
       <p>
-        <div>Ciclo <b>3</b></div>
+        <div>Repetição <b>3</b></div>
         <Timer time="00:22" />
-        <EndCycleButton>Iniciar novo Ciclo</EndCycleButton>
+        <EndCycleButton>Iniciar nova repetição</EndCycleButton>
       </p>
 
-      <p>
-        Aparelho <b>5</b>
-        <Timer time="02:50" />
-        <EndExercise>Finalizar aparelho</EndExercise>
-      </p>
+      <FieldWrapper>
+        <h3>Novo exercício</h3>
+        <select>
+          <option>Parte do corpo</option>
+          <option>Ombro</option>
+          <option>Peito</option>
+          <option>Costas</option>
+          <option>Biceps</option>
+          <option>Triceps</option>
+        </select>
+      </FieldWrapper>
+      <FieldWrapper>
+        <input type="text" placeholder="Exercício" />
+      </FieldWrapper>
+      <FieldWrapper>
+        <Start>Começar o exercício</Start>
+      </FieldWrapper>
 
       <p>
         Treino
@@ -37,6 +53,8 @@ const Wrapper = styled.div``
 
 const EndCycleButton = styled.button``
 
-const EndExercise = styled.button``
-
 const EndTraining = styled.button``
+
+const FieldWrapper = styled.p``
+
+const Start = styled.button``
