@@ -1,6 +1,10 @@
 import { ReactNode, createContext, useContext, useState } from 'react'
 import { Training, TrainingScreen } from '../types/training'
 import { Exercise } from '../types/exercise'
+import { Cycle } from '../types/cycle'
+import { DEFAULT_TRAINING } from './../constants/training'
+import { DEFAULT_EXERCISE } from './../constants/exercise'
+import { DEFAULT_CYCLE } from './../constants/cycle'
 
 type TrainingContextProviderProps = {
   children: ReactNode
@@ -8,69 +12,87 @@ type TrainingContextProviderProps = {
 
 type TrainingContextData = {
   currentScreen: TrainingScreen
-  training: Training | null
+  training: Training
+  exercise: Exercise
+  cycle: Cycle
+
   setCurrentScreen: (data: TrainingScreen) => void
-  newTraining: (data: Training) => void
-  getLastExercise: (data: Training) => Exercise | null
+  newTraining: () => void
+  newExercise: (data: Exercise) => void
+  newCycle: (data: Cycle) => void
+
   getTotalExercises: (data: Training) => number
+  getExerciseTotalCycles: (data: Exercise) => number
+  newCyclePause: () => void
 }
 
 const TrainingContext = createContext<TrainingContextData>({} as TrainingContextData)
 
 const TrainingContextProvider = ({ children }: TrainingContextProviderProps) => {
   const [currentScreen, setCurrentScreen] = useState<TrainingScreen>('NewTraining')
-  const [training, setTrainig] = useState<Training | null>(null)
+  const [training, setTraining] = useState<Training>(DEFAULT_TRAINING)
+  const [exercise, setExercise] = useState<Exercise>(DEFAULT_EXERCISE)
+  const [cycle, setCycle] = useState<Cycle>(DEFAULT_CYCLE)
 
-  const newTraining = (data: Training) => {
-    setTrainig(data)
+  const newTraining = () => {
+    setTraining(DEFAULT_TRAINING)
+  }
+
+  const newCycle = (cyle: Cycle) => {
     setCurrentScreen('Running')
   }
 
-  const newCycle = () => {
-
-  }
-
-  const newExercise = () => {
-
+  const newExercise = (exercise: Exercise) => {
+    setExercise(exercise)
+    setCurrentScreen('Running')
   }
 
   const endExercise = () => {
-
   }
 
-  const newCycleInterval = () => {
-
+  const newCyclePause = () => {
+    setCycle((curr) => ({
+      ...curr,
+      pauseAt: new Date()
+    }))
+    setCurrentScreen('EndCycle')
   }
 
   const endCyle = () => {
-
+    setCurrentScreen('EndCycle')
   }
 
   const endTraining = () => {
-
+    setCurrentScreen('EndTraining')
   }
 
   // get data
-  const getLastExercise = (training: Training) => {
-    if (!training) {
-      return null
-    }
-    const lastExercise = training.execises[training.execises.length - 1]
-    if (!lastExercise) {
-      return null
-    }
-    return lastExercise
+  const getTotalExercises = (training: Training) => {
+    const total = training.execises.length
+    return cycle.endAt ? total : total + 1
   }
 
-  const getTotalExercises = (training: Training) => {
-    if (!training) {
-      return 0
-    }
-    return training.execises.length
+  const getExerciseTotalCycles = (exercise: Exercise) => {
+    const total = exercise.cycles.length
+    return cycle.endAt ? total : total + 1
   }
 
   return (
-    <TrainingContext.Provider value={{ currentScreen, training, setCurrentScreen, newTraining, getLastExercise, getTotalExercises }}>
+    <TrainingContext.Provider value={{
+        currentScreen,
+        training,
+        exercise,
+        cycle,
+
+        setCurrentScreen,
+        newTraining,
+        newExercise,
+        newCycle,
+
+        getTotalExercises,
+        getExerciseTotalCycles,
+        newCyclePause
+      }}>
       {children}
     </TrainingContext.Provider>
   )

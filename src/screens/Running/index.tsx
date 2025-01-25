@@ -3,25 +3,31 @@ import Timer from "../../components/Timer"
 import { useTrainingContext } from "../../contexts/TrainingContext"
 
 const Running = () => {
-  const { training, getLastExercise, getTotalExercises } = useTrainingContext()
+  const {
+    training,
+    exercise,
+    getTotalExercises,
+    getExerciseTotalCycles,
+    newCyclePause
+  } = useTrainingContext()
 
-  if (!training) {
-    return <></>
-  }
-
-  const exercise = getLastExercise(training)
   const totalExercises = getTotalExercises(training)
-  // const cycle = getLastCycle(exercise)
+
+  const totalCycles = getExerciseTotalCycles(exercise)
+
+  const handleFinishCycle = () => {
+    newCyclePause()
+  }
 
   return (
     <Wrapper>
-      <h1>{exercise?.bodyPart}</h1>
+      <h1>{exercise.bodyPart}</h1>
       <p>
-        Exercício <b>{totalExercises}</b> {exercise?.name}
+        Exercício <b>{totalExercises}</b> {exercise.name}
         <Timer time="02:50" />
       </p>
       <p>
-        <div>Repetição <b>3</b></div>
+        <div>Repetição <b>{totalCycles}</b></div>
         <Timer time="00:22" />
       </p>
 
@@ -29,7 +35,7 @@ const Running = () => {
         Treino
         <Timer time="28:05" />
       </p>
-      <EndCycle>Finalizar Repetição</EndCycle>
+      <EndCycle onClick={handleFinishCycle}>Finalizar Repetição</EndCycle>
     </Wrapper>
   )
 }

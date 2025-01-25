@@ -1,7 +1,14 @@
 import styled from "styled-components"
 import Timer from "../../components/Timer"
+import { useTrainingContext } from "../../contexts/TrainingContext"
 
 const EndTraining = () => {
+  const { setCurrentScreen } = useTrainingContext()
+
+  const handleNewTraining = () => {
+    setCurrentScreen('NewTraining')
+  }
+
   return (
     <Wrapper>
       <p>
@@ -12,7 +19,7 @@ const EndTraining = () => {
         Total Exercícios <b>7</b>
       </p>
 
-        <SaveTraining>Novo treino</SaveTraining>
+        <NewTraining onClick={handleNewTraining}>Novo treino</NewTraining>
 
       <p>
         Treino total
@@ -32,6 +39,6 @@ export default EndTraining
 
 const Wrapper = styled.div``
 
-const SaveTraining = styled.button``
+const NewTraining = styled.button``
 
 const DiscartTraining = styled.button``

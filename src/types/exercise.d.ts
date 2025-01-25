@@ -5,5 +5,5 @@ export type BodyPart = 'ombro' | 'peito' | 'costas' | 'biceps' | 'triceps' | 'tr
 export type Exercise = {
   bodyPart: BodyPart
   name: string
-  cycles: [Cycle, ...Cycle[]]
+  cycles: Cycle[]
 }

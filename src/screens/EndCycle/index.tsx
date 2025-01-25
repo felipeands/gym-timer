@@ -1,7 +1,23 @@
 import styled from "styled-components"
 import Timer from "../../components/Timer"
+import { useTrainingContext } from "../../contexts/TrainingContext"
+import NewExerciseForm from "../../components/NewExercise"
 
 const EndCycle = () => {
+  const { setCurrentScreen } = useTrainingContext()
+
+  const handleEndTraining = () => {
+    setCurrentScreen('EndTraining')
+  }
+
+  const handleNewExercise = () => {
+    setCurrentScreen('Running')
+  }
+
+  const handleNewCycle = () => {
+    setCurrentScreen('Running')
+  }
+
   return (
     <Wrapper>
       <h1>Biceps</h1>
@@ -16,31 +32,16 @@ const EndCycle = () => {
       <p>
         <div>Repetição <b>3</b></div>
         <Timer time="00:22" />
-        <EndCycleButton>Iniciar nova repetição</EndCycleButton>
+        <EndCycleButton onClick={handleNewCycle}>Nova repetição</EndCycleButton>
       </p>
 
-      <FieldWrapper>
-        <h3>Novo exercício</h3>
-        <select>
-          <option>Parte do corpo</option>
-          <option>Ombro</option>
-          <option>Peito</option>
-          <option>Costas</option>
-          <option>Biceps</option>
-          <option>Triceps</option>
-        </select>
-      </FieldWrapper>
-      <FieldWrapper>
-        <input type="text" placeholder="Exercício" />
-      </FieldWrapper>
-      <FieldWrapper>
-        <Start>Começar o exercício</Start>
-      </FieldWrapper>
+      <h3>Novo exercício</h3>
+      <NewExerciseForm onSubmit={handleNewExercise} submitLabel="Iniciar exercício" />
 
       <p>
         Treino
         <Timer time="28:05" />
-        <EndTraining>Finalizar treino</EndTraining>
+        <EndTraining onClick={handleEndTraining}>Finalizar treino</EndTraining>
       </p>
     </Wrapper>
   )
@@ -54,7 +55,3 @@ const Wrapper = styled.div``
 const EndCycleButton = styled.button``
 
 const EndTraining = styled.button``
-
-const FieldWrapper = styled.p``
-
-const Start = styled.button``

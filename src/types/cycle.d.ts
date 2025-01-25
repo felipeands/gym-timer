@@ -1,5 +1,5 @@
 export type Cycle = {
   startAt: Date
-  intervalAt?: Date
+  pauseAt?: Date
   endAt?: Date
 }
