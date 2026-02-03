@@ -1,17 +1,14 @@
 import styled from "styled-components"
-import { BodyPart } from "../../types/exercise"
 import { useTrainingContext } from "../../contexts/TrainingContext"
 import NewExerciseForm from '../../components/NewExercise'
+import { NewExerciseProps } from "../../types/exercise"
 
-export type NewTrainingProps = {
-  bodyPart: BodyPart
-  name: string
-}
+
 
 const NewExercise = () => {
   const { newTraining, newExercise, newCycle, setCurrentScreen } = useTrainingContext()
 
-  const handleNewTraining = ({ bodyPart, name }: NewTrainingProps) => {
+  const handleNewTraining = ({ bodyPart, name }: NewExerciseProps) => {
     if (!bodyPart) {
       return
     }
@@ -22,14 +19,82 @@ const NewExercise = () => {
   }
 
   return (
-    <Wrapper>
-      <h1>
-        Novo treino
-      </h1>
-      <NewExerciseForm onSubmit={handleNewTraining} />
-    </Wrapper>)
+    <Container>
+      <Header>
+        <Logo>GymTime</Logo>
+      </Header>
+
+      <MainContent>
+        <Title>Inicar Novo Treino</Title>
+        <Subtitle>Selecione o grupo muscular e o exercício para começar agora.</Subtitle>
+
+        <FormCard>
+          <NewExerciseForm onSubmit={handleNewTraining} submitLabel="Começar o Treino" />
+          <HistoryButton onClick={() => setCurrentScreen('History')}>Ver Histórico</HistoryButton>
+        </FormCard>
+      </MainContent>
+    </Container>)
 }
 
 export default NewExercise
 
-const Wrapper = styled.div``
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 24px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+`
+
+const HistoryButton = styled.button`
+  background: transparent;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-top: 16px;
+  width: 100%;
+  padding: 8px;
+  font-size: 1rem;
+`
+
+const Header = styled.header`
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+  margin-bottom: 24px;
+`
+
+const Logo = styled.div`
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+`
+
+const MainContent = styled.main`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
+
+const Title = styled.h1`
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 16px 0;
+  line-height: 1.1;
+`
+
+const Subtitle = styled.p`
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin: 0 0 40px 0;
+  line-height: 1.5;
+`
+
+const FormCard = styled.div`
+  width: 100%;
+  max-width: 100%;
+`

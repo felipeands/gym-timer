@@ -6,4 +6,11 @@ export type Exercise = {
   bodyPart: BodyPart
   name: string
   cycles: Cycle[]
+  startAt?: Date
+  endAt?: Date
+}
+
+export type NewExerciseProps = {
+  bodyPart: BodyPart
+  name: string
 }

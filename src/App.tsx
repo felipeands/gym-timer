@@ -1,10 +1,10 @@
 import styled from 'styled-components'
-import { NewTraining, Running, EndCycle, EndTraining } from './screens';
+import { NewTraining, Running, EndCycle, EndTraining, History } from './screens';
 import { TrainingContextProvider, useTrainingContext } from './contexts/TrainingContext';
 
 const Screen = () => {
   const { currentScreen } = useTrainingContext()
-  switch(currentScreen) {
+  switch (currentScreen) {
     case 'NewTraining':
       return <NewTraining />
     case 'Running':
@@ -13,6 +13,8 @@ const Screen = () => {
       return <EndCycle />
     case 'EndTraining':
       return <EndTraining />
+    case 'History':
+      return <History />
   }
 }
 
