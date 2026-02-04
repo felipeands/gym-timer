@@ -97,15 +97,21 @@ const Start = styled.button`
   width: 100%;
   padding: 20px;
   border-radius: 20px;
-  background-color: var(--primary-color);
-  color: #000;
+  background-color: #00FF88;
+  color: #000000;
   font-size: 1.25rem;
   font-weight: 700;
   font-family: var(--font-main);
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   border: none;
+  display: block;
   
+  &:not(:disabled):hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+
   &:disabled {
     background-color: #333;
     color: #666;
@@ -114,6 +120,6 @@ const Start = styled.button`
   }
 
   &:active:not(:disabled) {
-    transform: scale(0.98);
+    transform: scale(0.98) translateY(0);
   }
 `
