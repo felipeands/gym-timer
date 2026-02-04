@@ -1,6 +1,5 @@
 import styled from "styled-components"
 import { useTrainingContext } from "../../contexts/TrainingContext"
-import Timer from "../../components/Timer"
 
 const History = () => {
   const { history, setCurrentScreen, deleteTraining } = useTrainingContext()

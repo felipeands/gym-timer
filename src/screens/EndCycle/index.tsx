@@ -6,10 +6,8 @@ import { NewExerciseProps } from "../../types/exercise"
 
 const EndCycle = () => {
   const {
-    training,
     exercise,
     cycle,
-    getTotalExercises,
     getExerciseTotalCycles,
     newCycle,
     endCycle,
@@ -46,7 +44,6 @@ const EndCycle = () => {
     setCurrentScreen('Running')
   }
 
-  const totalExercises = getTotalExercises(training)
   const totalCycles = getExerciseTotalCycles(exercise)
 
   const formatDuration = (start?: Date, end?: Date) => {
