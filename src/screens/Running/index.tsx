@@ -138,13 +138,20 @@ const ActionButton = styled.button`
   width: 100%;
   padding: 20px;
   border-radius: 20px;
-  background-color: var(--primary-color);
-  color: #000;
+  background-color: #00FF88;
+  color: #000000;
   font-size: 1.25rem;
   font-weight: 700;
-  transition: transform 0.1s active;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: none;
   
+  &:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+
   &:active {
-    transform: scale(0.98);
+    transform: scale(0.98) translateY(0);
   }
 `
