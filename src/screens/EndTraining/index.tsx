@@ -72,7 +72,7 @@ const EndTraining = () => {
       </StatsGrid>
 
       <Actions>
-        <PrimaryButton onClick={handleNewTraining}>Novo Treino</PrimaryButton>
+        <PrimaryButton onClick={handleNewTraining}>Salvar</PrimaryButton>
         <TextButton onClick={handleDiscardTraining}>Descartar</TextButton>
       </Actions>
     </Container>

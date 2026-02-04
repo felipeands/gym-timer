@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { BodyPart, NewExerciseProps } from "../../types/exercise"
 import { useState } from "react"
-import { bodyParts } from "../../constants/exercise"
+import { bodyParts, exercisesByBodyPart } from "../../constants/exercise"
 
 type Props = {
   submitLabel?: string
@@ -14,22 +14,38 @@ const NewExercise = ({ onSubmit, submitLabel = 'Começar o treino' }: Props) => 
   const [name, setName] = useState<string>('')
   const isFormValid = Boolean(bodyPart && name !== '')
 
+  const handleBodyPartChange = (value: BodyPart) => {
+    setBodyPart(value)
+    setName('') // Reset exercise name when body part changes
+  }
+
   const handleSubmit = () => {
     onSubmit({ bodyPart: bodyPart as BodyPart, name })
   }
 
+  const availableExercises = bodyPart ? exercisesByBodyPart[bodyPart] : []
+
   return (
     <Wrapper>
       <FieldWrapper>
-        <select onChange={(e) => setBodyPart(e.target.value as BodyPart)}>
-          <option>Parte do corpo</option>
+        <select value={bodyPart || ''} onChange={(e) => handleBodyPartChange(e.target.value as BodyPart)}>
+          <option value="" disabled>Parte do corpo</option>
           {bodyParts.map((name, index) => (
-            <option key={index} value={name}>{name}</option>
+            <option key={index} value={name}>{name.charAt(0).toUpperCase() + name.slice(1)}</option>
           ))}
         </select>
       </FieldWrapper>
       <FieldWrapper>
-        <input type="text" placeholder="Exercício" onChange={(e) => setName(e.target.value)} />
+        <select
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          disabled={!bodyPart}
+        >
+          <option value="" disabled>Exercício</option>
+          {availableExercises.map((exName, index) => (
+            <option key={index} value={exName}>{exName}</option>
+          ))}
+        </select>
       </FieldWrapper>
       <FieldWrapper>
         <Start disabled={!isFormValid} onClick={handleSubmit}>{submitLabel}</Start>
