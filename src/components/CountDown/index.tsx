@@ -24,7 +24,7 @@ const CountDown = ({ time, onFinish }: Props) => {
 
   return (
     <Container>
-      <CountdownNumber key={count}>{count}</CountdownNumber>
+      <CountdownNumber key={count} onClick={onFinish}>{count}</CountdownNumber>
       <Label>Prepare-se...</Label>
     </Container>
   )
@@ -64,6 +64,8 @@ const CountdownNumber = styled.h1`
   margin: 0;
   animation: ${pulse} 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   text-shadow: 0 0 40px rgba(0, 255, 136, 0.5);
+  cursor: pointer;
+  user-select: none;
 `
 
 const Label = styled.div`
