@@ -86,7 +86,7 @@ const History = () => {
                     <TrainingCard key={index}>
                       <CardHeader>
                         <InfoGroup>
-                          <TimeLabel>{training.startAt?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</TimeLabel>
+                          <TimeLabel>{training.startAt?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}</TimeLabel>
                           <DurationLabel>{formatTime(getDuration(training.startAt, training.endAt))}</DurationLabel>
                         </InfoGroup>
                         <DeleteButton onClick={(e) => { e.stopPropagation(); handleDelete(training); }} title="Excluir treino">×</DeleteButton>
