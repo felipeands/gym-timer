@@ -5,8 +5,8 @@
   --secondary-color: #FF3366;
   --text-color: #FFFFFF;
   --text-muted: #B0B0B0;
-  --font-main: 'Poppins', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-main: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Montserrat', monospace;
 }
 
 body {

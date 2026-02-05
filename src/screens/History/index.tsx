@@ -1,8 +1,10 @@
+import { useState, useMemo } from "react"
 import styled from "styled-components"
 import { useTrainingContext } from "../../contexts/TrainingContext"
 
 const History = () => {
   const { history, setCurrentScreen, deleteTraining } = useTrainingContext()
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600)
@@ -14,6 +16,36 @@ const History = () => {
   const getDuration = (start?: Date, end?: Date) => {
     if (!start || !end) return 0
     return Math.floor((end.getTime() - start.getTime()) / 1000)
+  }
+
+  const formatDate = (date?: Date) => {
+    if (!date) return ""
+    const d = date.getDate().toString().padStart(2, '0')
+    const m = (date.getMonth() + 1).toString().padStart(2, '0')
+    const y = date.getFullYear().toString().slice(-2)
+    return `${d}/${m}/${y}`
+  }
+
+  const getWeekday = (date?: Date) => {
+    if (!date) return ""
+    return new Intl.DateTimeFormat('pt-BR', { weekday: 'long' }).format(date)
+  }
+
+  const groupedHistory = useMemo(() => {
+    const groups: Record<string, typeof history> = {}
+    history.forEach(t => {
+      const dateKey = formatDate(t.startAt)
+      if (!groups[dateKey]) groups[dateKey] = []
+      groups[dateKey].push(t)
+    })
+    return groups
+  }, [history])
+
+  const toggleGroup = (date: string) => {
+    setExpandedGroups(prev => ({
+      ...prev,
+      [date]: !prev[date]
+    }))
   }
 
   const handleDelete = (training: any) => {
@@ -33,26 +65,47 @@ const History = () => {
         {history.length === 0 ? (
           <EmptyState>Nenhum treino registrado ainda.</EmptyState>
         ) : (
-          history.map((training, index) => (
-            <TrainingCard key={index}>
-              <CardHeader>
-                <InfoGroup>
-                  <DateLabel>{training.startAt?.toLocaleDateString()}</DateLabel>
-                  <DurationLabel>{formatTime(getDuration(training.startAt, training.endAt))}</DurationLabel>
-                </InfoGroup>
-                <DeleteButton onClick={() => handleDelete(training)} title="Excluir treino">×</DeleteButton>
-              </CardHeader>
-              <ExercisesList>
-                {(training.exercises || []).map((ex, i) => (
-                  <ExerciseItem key={i}>
-                    <ExerciseInfo>
-                      <ExerciseName>{ex.name}</ExerciseName>
-                      <ExerciseMeta>{ex.cycles.length} séries • {formatTime(getDuration(ex.startAt, ex.endAt))}</ExerciseMeta>
-                    </ExerciseInfo>
-                  </ExerciseItem>
-                ))}
-              </ExercisesList>
-            </TrainingCard>
+          Object.entries(groupedHistory).map(([date, sessions]) => (
+            <DateGroup key={date}>
+              <DateHeader onClick={() => toggleGroup(date)}>
+                <DateTitle>
+                  <ToggleIcon isExpanded={expandedGroups[date]}>
+                    ▼
+                  </ToggleIcon>
+                  <DateInfo>
+                    <DateText>{date}</DateText>
+                    <WeekdayText>{getWeekday(sessions[0]?.startAt)}</WeekdayText>
+                  </DateInfo>
+                </DateTitle>
+                <SessionsCount>{sessions.length} {sessions.length === 1 ? 'treino' : 'treinos'}</SessionsCount>
+              </DateHeader>
+
+              {expandedGroups[date] && (
+                <GroupContent>
+                  {sessions.map((training, index) => (
+                    <TrainingCard key={index}>
+                      <CardHeader>
+                        <InfoGroup>
+                          <TimeLabel>{training.startAt?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</TimeLabel>
+                          <DurationLabel>{formatTime(getDuration(training.startAt, training.endAt))}</DurationLabel>
+                        </InfoGroup>
+                        <DeleteButton onClick={(e) => { e.stopPropagation(); handleDelete(training); }} title="Excluir treino">×</DeleteButton>
+                      </CardHeader>
+                      <ExercisesList>
+                        {(training.exercises || []).map((ex, i) => (
+                          <ExerciseItem key={i}>
+                            <ExerciseInfo>
+                              <ExerciseName>{ex.name}</ExerciseName>
+                              <ExerciseMeta>{ex.cycles.length} {ex.cycles.length === 1 ? 'série' : 'séries'} • {formatTime(getDuration(ex.startAt, ex.endAt))}</ExerciseMeta>
+                            </ExerciseInfo>
+                          </ExerciseItem>
+                        ))}
+                      </ExercisesList>
+                    </TrainingCard>
+                  ))}
+                </GroupContent>
+              )}
+            </DateGroup>
           ))
         )}
       </List>
@@ -112,6 +165,69 @@ const EmptyState = styled.div`
   margin-top: 64px;
 `
 
+const DateGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`
+
+const DateHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 2px solid #333;
+  margin-top: 8px;
+`
+
+const DateTitle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-color);
+`
+
+const DateInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const DateText = styled.span`
+  line-height: 1.1;
+`
+
+const WeekdayText = styled.span`
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  text-transform: capitalize;
+  margin-top: 2px;
+`
+
+const ToggleIcon = styled.span<{ isExpanded?: boolean }>`
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
+  transform: rotate(${props => props.isExpanded ? '0deg' : '-90deg'});
+  color: var(--primary-color);
+`
+
+const SessionsCount = styled.div`
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  font-weight: 500;
+`
+
+const GroupContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 4px;
+`
+
 const TrainingCard = styled.div`
   background: var(--surface-color);
   padding: 20px;
@@ -158,9 +274,10 @@ const DeleteButton = styled.button`
   }
 `
 
-const DateLabel = styled.div`
+const TimeLabel = styled.div`
   font-weight: 700;
   color: var(--text-color);
+  font-size: 0.9rem;
 `
 
 const DurationLabel = styled.div`

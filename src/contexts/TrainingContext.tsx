@@ -115,16 +115,13 @@ const TrainingContextProvider = ({ children }: TrainingContextProviderProps) => 
 
   const endCycle = () => {
     const endAt = new Date();
-    setCycle(prevCycle => {
-      const cycleUpdated = { ...prevCycle, endAt };
+    const cycleUpdated = { ...cycle, endAt };
 
-      setExercise(prevEx => ({
-        ...prevEx,
-        cycles: [...prevEx.cycles, cycleUpdated]
-      }));
-
-      return cycleUpdated;
-    });
+    setCycle(cycleUpdated);
+    setExercise(prevEx => ({
+      ...prevEx,
+      cycles: [...prevEx.cycles, cycleUpdated]
+    }));
   }
 
   const endTraining = (finalExercise?: Exercise) => {

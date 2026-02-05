@@ -6,6 +6,7 @@ import { NewExerciseProps } from "../../types/exercise"
 
 const EndCycle = () => {
   const {
+    training,
     exercise,
     cycle,
     getExerciseTotalCycles,
@@ -31,8 +32,15 @@ const EndCycle = () => {
   }
 
   const handleNewExercise = ({ bodyPart, name }: NewExerciseProps) => {
-    endCycle()
-    endExercise()
+    // Correctly close the active cycle and exercise before starting a new one
+    const currentCycleUpdated = { ...cycle, endAt: new Date() }
+    const currentExerciseUpdated = {
+      ...exercise,
+      cycles: [...exercise.cycles, currentCycleUpdated],
+      endAt: new Date()
+    }
+
+    endExercise(currentExerciseUpdated)
     newExercise({ bodyPart, name, cycles: [] })
     newCycle({ startAt: new Date() })
     setCurrentScreen('Running')
@@ -53,6 +61,20 @@ const EndCycle = () => {
     const s = (seconds % 60).toString().padStart(2, '0')
     return `${m}:${s}`
   }
+
+  const currentExerciseData = { ...exercise, isActive: true }
+
+  // Sort completed exercises by most recent (descending)
+  const sortedCompletedExercises = [...training.exercises].reverse()
+
+  const groupedCompletedExercises = sortedCompletedExercises.reduce((acc, current) => {
+    const bodyPart = current.bodyPart || 'Outros'
+    if (!acc[bodyPart]) {
+      acc[bodyPart] = []
+    }
+    acc[bodyPart].push(current)
+    return acc
+  }, {} as Record<string, typeof training.exercises>)
 
   return (
     <Container>
@@ -81,6 +103,40 @@ const EndCycle = () => {
         <SectionDivider>OU</SectionDivider>
         <NewExerciseLabel>Novo Exercício</NewExerciseLabel>
         <NewExerciseForm onSubmit={handleNewExercise} submitLabel="Iniciar" />
+        <CompletedExercisesList>
+          <SectionLabel>Exercício atual</SectionLabel>
+          <GroupContainer>
+            <GroupHeader>{currentExerciseData.bodyPart}</GroupHeader>
+            <ExerciseItem $isActive={true}>
+              <IconWrapper>⏳</IconWrapper>
+              <ExerciseInfo>
+                <ExerciseName>{currentExerciseData.name}</ExerciseName>
+                <SeriesCount>{currentExerciseData.cycles.length + 1} {currentExerciseData.cycles.length + 1 === 1 ? 'série' : 'séries'}</SeriesCount>
+              </ExerciseInfo>
+            </ExerciseItem>
+          </GroupContainer>
+
+          {Object.keys(groupedCompletedExercises).length > 0 && (
+            <>
+              <SectionLabel style={{ marginTop: '24px' }}>Últimos exercícios</SectionLabel>
+              {Object.entries(groupedCompletedExercises).map(([bodyPart, exercises]) => (
+                <GroupContainer key={bodyPart}>
+                  <GroupHeader>{bodyPart}</GroupHeader>
+                  {exercises.map((ex, index) => (
+                    <ExerciseItem key={index}>
+                      <IconWrapper>✅</IconWrapper>
+                      <ExerciseInfo>
+                        <ExerciseName>{ex.name}</ExerciseName>
+                        <SeriesCount>{ex.cycles.length} {ex.cycles.length === 1 ? 'série' : 'séries'}</SeriesCount>
+                      </ExerciseInfo>
+                    </ExerciseItem>
+                  ))}
+                </GroupContainer>
+              ))}
+            </>
+          )}
+        </CompletedExercisesList>
+
         <TextButton onClick={handleEndTraining}>Finalizar Treino</TextButton>
       </Actions>
     </Container>
@@ -209,6 +265,66 @@ const TextButton = styled.button`
   color: var(--secondary-color);
   padding: 16px;
   font-size: 1rem;
-  margin-top: 32px;
+  margin-top: 16px;
   font-weight: 600;
+`
+
+const CompletedExercisesList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+`
+
+const GroupContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`
+
+const GroupHeader = styled.h3`
+  font-size: 0.875rem;
+  color: var(--secondary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  opacity: 0.8;
+`
+
+const ExerciseItem = styled.div<{ $isActive?: boolean }>`
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 4px;
+`
+
+const IconWrapper = styled.div`
+  font-size: 1.25rem;
+  padding-top: 2px;
+`
+
+const ExerciseInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+`
+
+const ExerciseName = styled.div`
+  font-size: 1rem;
+  color: var(--text-color);
+  font-weight: 600;
+`
+
+const SeriesCount = styled.div`
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+`
+
+const SectionLabel = styled.div`
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 8px;
 `
