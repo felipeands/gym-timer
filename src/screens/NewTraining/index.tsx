@@ -45,7 +45,6 @@ const Container = styled.div`
   padding: 24px;
   background-color: var(--bg-color);
   color: var(--text-color);
-  position: relative;
 `
 
 const HistoryButton = styled.button`
@@ -59,14 +58,10 @@ const HistoryButton = styled.button`
 `
 
 const Header = styled.header`
-  position: absolute;
-  top: 24px;
-  left: 0;
-  right: 0;
   display: flex;
   justify-content: center;
   padding: 16px 0;
-  z-index: 10;
+  margin-bottom: 24px;
 `
 
 const Logo = styled.div`
@@ -83,8 +78,6 @@ const MainContent = styled.main`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* Add some padding-top to avoid overlapping with absolute header on very short screens */
-  padding-top: 80px;
 `
 
 const Title = styled.h1`
