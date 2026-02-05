@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react"
 import styled from "styled-components"
 import Timer from "../../components/Timer"
 import { useTrainingContext } from "../../contexts/TrainingContext"
@@ -18,6 +19,21 @@ const EndCycle = () => {
     newExercise,
     setCurrentScreen
   } = useTrainingContext()
+
+  const [restElapsed, setRestElapsed] = useState(0)
+
+  useEffect(() => {
+    if (!cycle.pauseAt) return
+
+    const calculate = () => {
+      const diff = Math.floor((new Date().getTime() - cycle.pauseAt!.getTime()) / 1000)
+      setRestElapsed(diff)
+    }
+
+    calculate()
+    const interval = setInterval(calculate, 1000)
+    return () => clearInterval(interval)
+  }, [cycle.pauseAt])
 
   const handleEndTraining = () => {
     // Correctly close the active cycle and exercise before ending training
@@ -86,7 +102,10 @@ const EndCycle = () => {
 
       <MainSection>
         <Label>Tempo de Descanso</Label>
-        <Timer startDate={cycle.pauseAt} size="massive" variant="secondary" />
+        <Timer startDate={cycle.pauseAt} size="massive" variant={restElapsed >= 60 ? 'primary' : 'secondary'} />
+        <ProgressWrapper>
+          <ProgressBar progress={Math.min((restElapsed / 60) * 100, 100)} />
+        </ProgressWrapper>
       </MainSection>
 
       <StatsGrid>
@@ -339,4 +358,40 @@ const SectionLabel = styled.div`
 const SmallText = styled.span`
   font-size: 0.75rem;
   color: var(--text-muted);
+`
+
+const ProgressWrapper = styled.div`
+  width: 100%;
+  max-width: 280px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 12px;
+`
+
+const ProgressBar = styled.div<{ progress: number }>`
+  height: 100%;
+  width: ${props => props.progress}%;
+  transition: width 1s linear, background-color 1s linear;
+  background-color: ${props => {
+    const p = props.progress / 100;
+    let r, g, b;
+
+    if (p < 0.85) {
+      // 0-51s: From Intense red (255, 0, 40) to Yellow (255, 255, 0)
+      const ratio = p / 0.85;
+      r = 255;
+      g = Math.round(255 * ratio);
+      b = Math.round(40 * (1 - ratio));
+    } else {
+      // 51-60s: From Yellow (255, 255, 0) to Brand Green (0, 255, 136)
+      const ratio = (p - 0.85) / 0.15;
+      r = Math.round(255 * (1 - ratio));
+      g = 255;
+      b = Math.round(136 * ratio);
+    }
+
+    return `rgb(${r}, ${g}, ${b})`;
+  }};
 `
