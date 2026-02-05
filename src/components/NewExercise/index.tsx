@@ -1,7 +1,8 @@
 import styled from "styled-components"
 import { BodyPart, NewExerciseProps } from "../../types/exercise"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { bodyParts, exercisesByBodyPart } from "../../constants/exercise"
+import { useTrainingContext } from "../../contexts/TrainingContext"
 
 type Props = {
   submitLabel?: string
@@ -10,8 +11,17 @@ type Props = {
 
 
 const NewExercise = ({ onSubmit, submitLabel = 'Começar o treino' }: Props) => {
+  const { training, exercise: activeExercise } = useTrainingContext()
   const [bodyPart, setBodyPart] = useState<BodyPart | null>(null)
   const [name, setName] = useState<string>('')
+
+  const completedExercises = useMemo(() => {
+    const names = new Set(training.exercises.map(ex => ex.name))
+    if (activeExercise.name) {
+      names.add(activeExercise.name)
+    }
+    return names
+  }, [training.exercises, activeExercise.name])
   const isFormValid = Boolean(bodyPart && name !== '')
 
   const handleBodyPartChange = (value: BodyPart) => {
@@ -42,9 +52,14 @@ const NewExercise = ({ onSubmit, submitLabel = 'Começar o treino' }: Props) => 
           disabled={!bodyPart}
         >
           <option value="" disabled>Exercício</option>
-          {availableExercises.map((exName, index) => (
-            <option key={index} value={exName}>{exName}</option>
-          ))}
+          {availableExercises.map((exName, index) => {
+            const isCompleted = completedExercises.has(exName)
+            return (
+              <option key={index} value={exName}>
+                {exName} {isCompleted ? '✅' : ''}
+              </option>
+            )
+          })}
         </select>
       </FieldWrapper>
       <FieldWrapper>
