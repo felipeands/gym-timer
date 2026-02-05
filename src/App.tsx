@@ -1,9 +1,18 @@
+import { useEffect } from 'react'
 import styled from 'styled-components'
 import { NewTraining, Running, EndCycle, EndTraining, History, Countdown } from './screens';
 import { TrainingContextProvider, useTrainingContext } from './contexts/TrainingContext';
 
 const Screen = () => {
   const { currentScreen } = useTrainingContext()
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }, [currentScreen])
+
   switch (currentScreen) {
     case 'NewTraining':
       return <NewTraining />
