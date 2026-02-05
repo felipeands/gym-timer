@@ -204,4 +204,5 @@ const TextButton = styled.button`
   color: var(--secondary-color);
   padding: 16px;
   font-size: 1rem;
+  border: none;
 `

@@ -296,6 +296,7 @@ const TextButton = styled.button`
   font-size: 1rem;
   margin-top: 16px;
   font-weight: 600;
+  border: none;
 `
 
 const CompletedExercisesList = styled.div`

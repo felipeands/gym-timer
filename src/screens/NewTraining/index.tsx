@@ -65,6 +65,7 @@ const HistoryButton = styled.button`
   width: 100%;
   padding: 8px;
   font-size: 1rem;
+  border: none;
 `
 
 const MainContent = styled.main`
