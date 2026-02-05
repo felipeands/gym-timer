@@ -7,10 +7,12 @@ import { useTrainingContext } from "../../contexts/TrainingContext"
 type Props = {
   submitLabel?: string
   onSubmit: (data: NewExerciseProps) => void
+  secondaryAction?: React.ReactNode
+  fixedActions?: boolean
 }
 
 
-const NewExercise = ({ onSubmit, submitLabel = 'Começar o treino' }: Props) => {
+const NewExercise = ({ onSubmit, submitLabel = 'Começar o treino', secondaryAction, fixedActions }: Props) => {
   const { training, exercise: activeExercise } = useTrainingContext()
   const [bodyPart, setBodyPart] = useState<BodyPart | null>(null)
   const [name, setName] = useState<string>('')
@@ -36,46 +38,77 @@ const NewExercise = ({ onSubmit, submitLabel = 'Começar o treino' }: Props) => 
   const availableExercises = bodyPart ? exercisesByBodyPart[bodyPart] : []
 
   return (
-    <Wrapper>
-      <FieldWrapper>
-        <select value={bodyPart || ''} onChange={(e) => handleBodyPartChange(e.target.value as BodyPart)}>
-          <option value="" disabled>Parte do corpo</option>
-          {bodyParts.map((name, index) => (
-            <option key={index} value={name}>{name.charAt(0).toUpperCase() + name.slice(1)}</option>
-          ))}
-        </select>
-      </FieldWrapper>
-      <FieldWrapper>
-        <select
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          disabled={!bodyPart}
-        >
-          <option value="" disabled>Exercício</option>
-          {availableExercises.map((exName, index) => {
-            const isCompleted = completedExercises.has(exName)
-            return (
-              <option key={index} value={exName}>
-                {exName} {isCompleted ? '✅' : ''}
-              </option>
-            )
-          })}
-        </select>
-      </FieldWrapper>
-      <FieldWrapper>
+    <Wrapper $fixedActions={fixedActions}>
+      <Fields>
+        <FieldWrapper>
+          <select value={bodyPart || ''} onChange={(e) => handleBodyPartChange(e.target.value as BodyPart)}>
+            <option value="" disabled>Parte do corpo</option>
+            {bodyParts.map((name, index) => (
+              <option key={index} value={name}>{name.charAt(0).toUpperCase() + name.slice(1)}</option>
+            ))}
+          </select>
+        </FieldWrapper>
+        <FieldWrapper>
+          <select
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            disabled={!bodyPart}
+          >
+            <option value="" disabled>Exercício</option>
+            {availableExercises.map((exName, index) => {
+              const isCompleted = completedExercises.has(exName)
+              return (
+                <option key={index} value={exName}>
+                  {exName} {isCompleted ? '✅' : ''}
+                </option>
+              )
+            })}
+          </select>
+        </FieldWrapper>
+      </Fields>
+      <Actions $fixed={fixedActions}>
         <Start disabled={!isFormValid} onClick={handleSubmit}>{submitLabel}</Start>
-      </FieldWrapper>
+        {secondaryAction}
+      </Actions>
     </Wrapper>
   )
 }
 
 export default NewExercise
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $fixedActions?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 16px;
   width: 100%;
+  ${props => props.$fixedActions && `
+    padding-bottom: 20px;
+  `}
+`
+
+const Fields = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+`
+
+const Actions = styled.div<{ $fixed?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  
+  ${props => props.$fixed ? `
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px;
+    background: linear-gradient(to top, var(--bg-color) 80%, transparent);
+    z-index: 10;
+  ` : `
+    width: 100%;
+  `}
 `
 
 const FieldWrapper = styled.div`

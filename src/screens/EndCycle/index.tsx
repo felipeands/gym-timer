@@ -110,14 +110,14 @@ const EndCycle = () => {
 
       <StatsGrid>
         <StatCard>
-          <Label>Repetição Anterior</Label>
+          <Label>Série Anterior</Label>
           <Value>{formatDuration(cycle.startAt, cycle.pauseAt)}</Value>
         </StatCard>
         <StatCard>
-          <Label>Total Repetições</Label>
+          <Label>Total Séries</Label>
           <Value>{totalCycles}</Value>
         </StatCard>
-        <StatCard>
+        <StatCard $fullWidth>
           <Label>Treino Total</Label>
           <Timer startDate={training.startAt} size="medium" variant="neutral" />
           <SmallText>#{totalExercises}</SmallText>
@@ -125,7 +125,7 @@ const EndCycle = () => {
       </StatsGrid>
 
       <Actions>
-        <PrimaryButton onClick={handleNewCycle}>Nova repetição</PrimaryButton>
+        <PrimaryButton onClick={handleNewCycle}>Nova série</PrimaryButton>
         <SectionDivider>OU</SectionDivider>
         <NewExerciseLabel>Novo Exercício</NewExerciseLabel>
         <NewExerciseForm onSubmit={handleNewExercise} submitLabel="Iniciar" />
@@ -211,12 +211,12 @@ const Label = styled.div`
 
 const StatsGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 32px;
 `
 
-const StatCard = styled.div`
+const StatCard = styled.div<{ $fullWidth?: boolean }>`
   background: var(--surface-color);
   padding: 16px;
   border-radius: 16px;
@@ -224,6 +224,9 @@ const StatCard = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  ${props => props.$fullWidth && `
+    grid-column: span 2;
+  `}
 `
 
 const Value = styled.div`

@@ -49,34 +49,36 @@ const EndTraining = () => {
 
   return (
     <Container>
-      <Header>
-        <Title>Treino Finalizado</Title>
-        <DateText>{formatDate(new Date())}</DateText>
-      </Header>
+      <ScrollContent>
+        <Header>
+          <Title>Treino Finalizado</Title>
+          <DateText>{formatDate(new Date())}</DateText>
+        </Header>
 
-      <StatsGrid>
-        <HighlightCard>
-          <Label>Duração Total</Label>
-          <Timer time={formatTime(trainingDurationSeconds)} size="large" variant="primary" />
-        </HighlightCard>
+        <StatsGrid>
+          <HighlightCard>
+            <Label>Duração Total</Label>
+            <Timer time={formatTime(trainingDurationSeconds)} size="large" variant="primary" />
+          </HighlightCard>
 
-        <StatCard>
-          <Label>Exercícios</Label>
-          <Value>{totalExercises}</Value>
-        </StatCard>
-        <StatCard>
-          <Label>Séries</Label>
-          <Value>{totalCycles}</Value>
-        </StatCard>
-        <StatCard>
-          <Label>Tempo Ativo</Label>
-          <Value>{formatTime(Math.floor(exercisingDurationSeconds))}</Value>
-        </StatCard>
-        <StatCard>
-          <Label>Descanso</Label>
-          <Value>{formatTime(Math.max(0, Math.floor(restDurationSeconds)))}</Value>
-        </StatCard>
-      </StatsGrid>
+          <StatCard>
+            <Label>Exercícios</Label>
+            <Value>{totalExercises}</Value>
+          </StatCard>
+          <StatCard>
+            <Label>Séries</Label>
+            <Value>{totalCycles}</Value>
+          </StatCard>
+          <StatCard>
+            <Label>Tempo Ativo</Label>
+            <Value>{formatTime(Math.floor(exercisingDurationSeconds))}</Value>
+          </StatCard>
+          <StatCard>
+            <Label>Descanso</Label>
+            <Value>{formatTime(Math.max(0, Math.floor(restDurationSeconds)))}</Value>
+          </StatCard>
+        </StatsGrid>
+      </ScrollContent>
 
       <Actions>
         <PrimaryButton onClick={handleNewTraining}>Salvar</PrimaryButton>
@@ -91,10 +93,17 @@ export default EndTraining
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  padding: 24px;
+  height: 100vh;
   background-color: var(--bg-color);
   color: var(--text-color);
+  position: relative;
+  overflow: hidden;
+`
+
+const ScrollContent = styled.div`
+  flex: 1;
+  padding: 24px 24px 180px 24px;
+  overflow-y: auto;
 `
 
 const Header = styled.header`
@@ -159,7 +168,13 @@ const Actions = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 32px;
+  padding: 24px;
+  background: linear-gradient(to top, var(--bg-color) 80%, transparent);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
 `
 
 const PrimaryButton = styled.button`

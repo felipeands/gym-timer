@@ -23,30 +23,32 @@ const Running = () => {
 
   return (
     <Container>
-      <Header>
-        <ExerciseTitle>{exercise.name}</ExerciseTitle>
-        <BodyPartBadge>{exercise.bodyPart}</BodyPartBadge>
-      </Header>
+      <ScrollContent>
+        <Header>
+          <ExerciseTitle>{exercise.name}</ExerciseTitle>
+          <BodyPartBadge>{exercise.bodyPart}</BodyPartBadge>
+        </Header>
 
-      <MainSection>
-        <Label>Repetição {totalCycles}</Label>
-        <Timer startDate={cycle.startAt} size="massive" variant="primary" />
-      </MainSection>
+        <MainSection>
+          <Label>Série {totalCycles}</Label>
+          <Timer startDate={cycle.startAt} size="massive" variant="primary" />
+        </MainSection>
 
-      <StatsGrid>
-        <StatCard>
-          <Label>Exercício</Label>
-          <Timer startDate={exercise.startAt} size="medium" />
-        </StatCard>
-        <StatCard>
-          <Label>Treino Total</Label>
-          <Timer startDate={training.startAt} size="medium" variant="neutral" />
-          <SmallText>#{totalExercises}</SmallText>
-        </StatCard>
-      </StatsGrid>
+        <StatsGrid>
+          <StatCard>
+            <Label>Exercício</Label>
+            <Timer startDate={exercise.startAt} size="medium" />
+          </StatCard>
+          <StatCard>
+            <Label>Treino Total</Label>
+            <Timer startDate={training.startAt} size="medium" variant="neutral" />
+            <SmallText>#{totalExercises}</SmallText>
+          </StatCard>
+        </StatsGrid>
+      </ScrollContent>
 
       <Footer>
-        <ActionButton onClick={handleFinishCycle}>Finalizar Repetição</ActionButton>
+        <ActionButton onClick={handleFinishCycle}>Finalizar Série</ActionButton>
       </Footer>
     </Container>
   )
@@ -58,10 +60,18 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
-  /* Ensure it takes full viewport height and doesn't scroll the container itself unless overflow */
   background-color: var(--bg-color);
   color: var(--text-color);
   position: relative;
+  overflow: hidden;
+`
+
+const ScrollContent = styled.div`
+  flex: 1;
+  padding: 0 0 120px 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 `
 
 const Header = styled.header`
@@ -129,8 +139,11 @@ const SmallText = styled.span`
 
 const Footer = styled.footer`
   padding: 24px;
-  background-color: var(--bg-color); 
-  margin-top: auto;
+  background: linear-gradient(to top, var(--bg-color) 80%, transparent);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   z-index: 10;
 `
 

@@ -21,13 +21,21 @@ const NewExercise = () => {
   return (
     <Container>
       <MainContent>
-        <Title>Inicar Novo Treino</Title>
-        <Subtitle>Selecione o grupo muscular e o exercício para começar agora.</Subtitle>
+        <ScrollContent>
+          <Title>Inicar Novo Treino</Title>
+          <Subtitle>Selecione o grupo muscular e o exercício para começar agora.</Subtitle>
 
-        <FormCard>
-          <NewExerciseForm onSubmit={handleNewTraining} submitLabel="Começar o Treino" />
-          <HistoryButton onClick={() => setCurrentScreen('History')}>Ver Histórico</HistoryButton>
-        </FormCard>
+          <FormCard>
+            <NewExerciseForm
+              onSubmit={handleNewTraining}
+              submitLabel="Começar o Treino"
+              fixedActions
+              secondaryAction={
+                <HistoryButton onClick={() => setCurrentScreen('History')}>Ver Histórico</HistoryButton>
+              }
+            />
+          </FormCard>
+        </ScrollContent>
       </MainContent>
     </Container>)
 }
@@ -37,17 +45,23 @@ export default NewExercise
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  padding: 24px;
+  height: 100vh;
   background-color: var(--bg-color);
   color: var(--text-color);
+  position: relative;
+  overflow: hidden;
+`
+
+const ScrollContent = styled.div`
+  flex: 1;
+  padding: 24px 24px 180px 24px;
+  overflow-y: auto;
 `
 
 const HistoryButton = styled.button`
   background: transparent;
   color: var(--primary-color);
   font-weight: 600;
-  margin-top: 16px;
   width: 100%;
   padding: 8px;
   font-size: 1rem;
