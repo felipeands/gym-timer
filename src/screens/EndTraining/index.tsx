@@ -25,6 +25,13 @@ const EndTraining = () => {
     return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`
   }
 
+  const formatDate = (date: Date) => {
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const year = date.getFullYear()
+    return `${day}/${month}/${year}`
+  }
+
   const trainingDurationSeconds = training.startAt && training.endAt
     ? Math.floor((training.endAt.getTime() - training.startAt.getTime()) / 1000)
     : 0
@@ -44,7 +51,7 @@ const EndTraining = () => {
     <Container>
       <Header>
         <Title>Treino Finalizado</Title>
-        <DateText>{new Date().toLocaleDateString()}</DateText>
+        <DateText>{formatDate(new Date())}</DateText>
       </Header>
 
       <StatsGrid>

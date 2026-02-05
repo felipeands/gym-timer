@@ -39,4 +39,10 @@ function App() {
 
 export default App
 
-const AppWrapper = styled.div``
+const AppWrapper = styled.div`
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  * {
+    font-family: inherit;
+  }
+`
