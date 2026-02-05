@@ -1,6 +1,6 @@
 import { Exercise } from "./exercise"
 
-export type TrainingScreen = 'NewTraining' | 'Running' | 'EndCycle' | 'EndTraining' | 'History' | 'Countdown'
+export type TrainingScreen = 'NewTraining' | 'Running' | 'EndCycle' | 'EndTraining' | 'History' | 'Countdown' | 'Recovery'
 
 export type Feeling = 'Fuck' | 'Bad' | 'Neutral' | 'Good' | 'VeryGood'
 

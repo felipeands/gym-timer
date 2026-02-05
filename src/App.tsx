@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
-import { NewTraining, Running, EndCycle, EndTraining, History, Countdown } from './screens';
+import { NewTraining, Running, EndCycle, EndTraining, History, Countdown, Recovery } from './screens';
 import { TrainingContextProvider, useTrainingContext } from './contexts/TrainingContext';
 
 const Screen = () => {
@@ -26,6 +26,8 @@ const Screen = () => {
       return <EndTraining />
     case 'History':
       return <History />
+    case 'Recovery':
+      return <Recovery />
   }
 }
 

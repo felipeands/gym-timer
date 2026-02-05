@@ -30,14 +30,24 @@ type TrainingContextData = {
   getExerciseTotalCycles: (data: Exercise) => number
   newCyclePause: () => void
   startCycle: () => void
+
+  recoverTraining: () => void
+  discardRecovery: () => void
 }
 
 const TrainingContext = createContext<TrainingContextData>({} as TrainingContextData)
 
 const STORAGE_KEY = '@gym-timer:history'
+const ACTIVE_STATE_KEY = '@gym-timer:active-state'
 
 const TrainingContextProvider = ({ children }: TrainingContextProviderProps) => {
-  const [currentScreen, setCurrentScreen] = useState<TrainingScreen>('NewTraining')
+  const [currentScreen, setCurrentScreen] = useState<TrainingScreen>(() => {
+    const stored = localStorage.getItem(ACTIVE_STATE_KEY)
+    if (stored) {
+      return 'Recovery'
+    }
+    return 'NewTraining'
+  })
 
   const [training, setTraining] = useState<Training>(DEFAULT_TRAINING)
   const [exercise, setExercise] = useState<Exercise>(DEFAULT_EXERCISE)
@@ -76,6 +86,20 @@ const TrainingContextProvider = ({ children }: TrainingContextProviderProps) => 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(history))
   }, [history])
+
+  useEffect(() => {
+    if (['Running', 'Countdown', 'EndCycle'].includes(currentScreen)) {
+      const state = {
+        training,
+        exercise,
+        cycle,
+        currentScreen
+      }
+      localStorage.setItem(ACTIVE_STATE_KEY, JSON.stringify(state))
+    } else if (currentScreen === 'EndTraining' || currentScreen === 'NewTraining') {
+      localStorage.removeItem(ACTIVE_STATE_KEY)
+    }
+  }, [training, exercise, cycle, currentScreen])
 
   const newTraining = () => {
     setTraining(DEFAULT_TRAINING)
@@ -197,6 +221,65 @@ const TrainingContextProvider = ({ children }: TrainingContextProviderProps) => 
     setHistory(prev => prev.filter(t => t.startAt?.getTime() !== startDate.getTime()))
   }
 
+  const recoverTraining = () => {
+    const stored = localStorage.getItem(ACTIVE_STATE_KEY)
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+
+        // Restore dates
+        if (parsed.training) {
+          parsed.training.startAt = parsed.training.startAt ? new Date(parsed.training.startAt) : undefined
+          parsed.training.endAt = parsed.training.endAt ? new Date(parsed.training.endAt) : undefined
+          parsed.training.exercises = parsed.training.exercises.map((e: any) => ({
+            ...e,
+            startAt: e.startAt ? new Date(e.startAt) : undefined,
+            endAt: e.endAt ? new Date(e.endAt) : undefined,
+            cycles: e.cycles.map((c: any) => ({
+              ...c,
+              startAt: c.startAt ? new Date(c.startAt) : undefined,
+              pauseAt: c.pauseAt ? new Date(c.pauseAt) : undefined,
+              endAt: c.endAt ? new Date(c.endAt) : undefined,
+            }))
+          }))
+        }
+
+        if (parsed.exercise) {
+          parsed.exercise.startAt = parsed.exercise.startAt ? new Date(parsed.exercise.startAt) : undefined
+          parsed.exercise.endAt = parsed.exercise.endAt ? new Date(parsed.exercise.endAt) : undefined
+          parsed.exercise.cycles = parsed.exercise.cycles.map((c: any) => ({
+            ...c,
+            startAt: c.startAt ? new Date(c.startAt) : undefined,
+            pauseAt: c.pauseAt ? new Date(c.pauseAt) : undefined,
+            endAt: c.endAt ? new Date(c.endAt) : undefined,
+          }))
+        }
+
+        if (parsed.cycle) {
+          parsed.cycle.startAt = parsed.cycle.startAt ? new Date(parsed.cycle.startAt) : undefined
+          parsed.cycle.pauseAt = parsed.cycle.pauseAt ? new Date(parsed.cycle.pauseAt) : undefined
+          parsed.cycle.endAt = parsed.cycle.endAt ? new Date(parsed.cycle.endAt) : undefined
+        }
+
+        setTraining(parsed.training)
+        setExercise(parsed.exercise)
+        setCycle(parsed.cycle)
+        setCurrentScreen(parsed.currentScreen)
+      } catch (e) {
+        console.error('Failed to recover training', e)
+        discardRecovery()
+      }
+    }
+  }
+
+  const discardRecovery = () => {
+    localStorage.removeItem(ACTIVE_STATE_KEY)
+    setTraining(DEFAULT_TRAINING)
+    setExercise(DEFAULT_EXERCISE)
+    setCycle(DEFAULT_CYCLE)
+    setCurrentScreen('NewTraining')
+  }
+
   return (
     <TrainingContext.Provider value={{
       currentScreen,
@@ -216,8 +299,11 @@ const TrainingContextProvider = ({ children }: TrainingContextProviderProps) => 
 
       getTotalExercises,
       getExerciseTotalCycles,
+
       newCyclePause,
-      startCycle
+      startCycle,
+      recoverTraining,
+      discardRecovery
     }}>
       {children}
     </TrainingContext.Provider>
