@@ -20,10 +20,6 @@ const NewExercise = () => {
 
   return (
     <Container>
-      <Header>
-        <Logo>GymTime</Logo>
-      </Header>
-
       <MainContent>
         <Title>Inicar Novo Treino</Title>
         <Subtitle>Selecione o grupo muscular e o exercício para começar agora.</Subtitle>
@@ -55,22 +51,6 @@ const HistoryButton = styled.button`
   width: 100%;
   padding: 8px;
   font-size: 1rem;
-`
-
-const Header = styled.header`
-  display: flex;
-  justify-content: center;
-  padding: 16px 0;
-  margin-bottom: 24px;
-`
-
-const Logo = styled.div`
-  font-weight: 900;
-  font-size: 1.5rem;
-  letter-spacing: -1px;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 `
 
 const MainContent = styled.main`
