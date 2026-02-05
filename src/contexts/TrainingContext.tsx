@@ -29,6 +29,7 @@ type TrainingContextData = {
   getTotalExercises: (data: Training) => number
   getExerciseTotalCycles: (data: Exercise) => number
   newCyclePause: () => void
+  startCycle: () => void
 }
 
 const TrainingContext = createContext<TrainingContextData>({} as TrainingContextData)
@@ -77,23 +78,15 @@ const TrainingContextProvider = ({ children }: TrainingContextProviderProps) => 
   }, [history])
 
   const newTraining = () => {
-    setTraining({
-      ...DEFAULT_TRAINING,
-      startAt: new Date()
-    })
+    setTraining(DEFAULT_TRAINING)
   }
 
   const newCycle = (cycle: Cycle) => {
     setCycle(cycle)
-    setCurrentScreen('Running')
   }
 
   const newExercise = (exercise: Exercise) => {
-    setExercise({
-      ...exercise,
-      startAt: new Date()
-    })
-    setCurrentScreen('Running')
+    setExercise(exercise)
   }
 
   const endExercise = (favExercise?: Exercise) => {
@@ -111,6 +104,26 @@ const TrainingContextProvider = ({ children }: TrainingContextProviderProps) => 
       ...curr,
       pauseAt: new Date()
     }))
+  }
+
+  const startCycle = () => {
+    const now = new Date()
+    setCycle((curr) => ({
+      ...curr,
+      startAt: now
+    }))
+    setExercise((curr) => {
+      if (!curr.startAt) {
+        return { ...curr, startAt: now }
+      }
+      return curr
+    })
+    setTraining((curr) => {
+      if (!curr.startAt) {
+        return { ...curr, startAt: now }
+      }
+      return curr
+    })
   }
 
   const endCycle = () => {
@@ -203,7 +216,8 @@ const TrainingContextProvider = ({ children }: TrainingContextProviderProps) => 
 
       getTotalExercises,
       getExerciseTotalCycles,
-      newCyclePause
+      newCyclePause,
+      startCycle
     }}>
       {children}
     </TrainingContext.Provider>

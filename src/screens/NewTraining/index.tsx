@@ -14,8 +14,8 @@ const NewExercise = () => {
     }
     newTraining()
     newExercise({ bodyPart, name, cycles: [] })
-    newCycle({ startAt: new Date() })
-    setCurrentScreen('Running')
+    newCycle({})
+    setCurrentScreen('Countdown')
   }
 
   return (

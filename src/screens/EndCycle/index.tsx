@@ -10,6 +10,7 @@ const EndCycle = () => {
     exercise,
     cycle,
     getExerciseTotalCycles,
+    getTotalExercises,
     newCycle,
     endCycle,
     endExercise,
@@ -42,17 +43,18 @@ const EndCycle = () => {
 
     endExercise(currentExerciseUpdated)
     newExercise({ bodyPart, name, cycles: [] })
-    newCycle({ startAt: new Date() })
-    setCurrentScreen('Running')
+    newCycle({})
+    setCurrentScreen('Countdown')
   }
 
   const handleNewCycle = () => {
     endCycle()
-    newCycle({ startAt: new Date() })
-    setCurrentScreen('Running')
+    newCycle({})
+    setCurrentScreen('Countdown')
   }
 
   const totalCycles = getExerciseTotalCycles(exercise)
+  const totalExercises = getTotalExercises(training)
 
   const formatDuration = (start?: Date, end?: Date) => {
     if (!start || !end) return "00:00"
@@ -95,6 +97,11 @@ const EndCycle = () => {
         <StatCard>
           <Label>Total Repetições</Label>
           <Value>{totalCycles}</Value>
+        </StatCard>
+        <StatCard>
+          <Label>Treino Total</Label>
+          <Timer startDate={training.startAt} size="medium" variant="neutral" />
+          <SmallText>#{totalExercises}</SmallText>
         </StatCard>
       </StatsGrid>
 
@@ -185,7 +192,7 @@ const Label = styled.div`
 
 const StatsGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 16px;
   margin-bottom: 32px;
 `
@@ -327,4 +334,9 @@ const SectionLabel = styled.div`
   letter-spacing: 1px;
   font-weight: 700;
   margin-bottom: 8px;
+`
+
+const SmallText = styled.span`
+  font-size: 0.75rem;
+  color: var(--text-muted);
 `
