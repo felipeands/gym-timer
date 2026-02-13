@@ -58,7 +58,7 @@ const Container = styled.div`
 `
 
 const CountdownNumber = styled.h1`
-  font-size: 10rem;
+  font-size: 9rem;
   font-weight: 800;
   color: #00FF88;
   margin: 0;
